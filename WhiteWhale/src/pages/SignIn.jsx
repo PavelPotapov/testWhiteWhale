@@ -52,10 +52,8 @@ export const SignIn = () => {
 
 	const onSubmit = (data) => {
 		setIsPageLoading(true)
-		console.log(data, "!!!")
 		login(data.email, data.password)
 			.then((res) => {
-				console.log(res)
 				toast({
 					title: "Hello!",
 					status: "success",
@@ -65,7 +63,6 @@ export const SignIn = () => {
 				navigate("/workspace")
 			})
 			.catch((err) => {
-				console.log(err, "err!!!")
 				toast({
 					title: "error",
 					status: "error",

@@ -49,10 +49,8 @@ export const SignUp = () => {
 
 	const onSubmit = (data) => {
 		setIsPageLoading(true)
-		console.log(data)
 		registration(data.email, data.password, data.name)
 			.then((res) => {
-				console.log(res, "res!!!", res)
 				toast({
 					title: "Account created",
 					status: "success",
@@ -61,7 +59,6 @@ export const SignUp = () => {
 				navigate("/sign_in")
 			})
 			.catch((err) => {
-				console.log(err, "err!!!")
 				const errorMsg = err.response.data.errors.email[0]
 				toast({
 					title: errorMsg,

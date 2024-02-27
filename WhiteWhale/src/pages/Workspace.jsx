@@ -61,7 +61,6 @@ export const Workspace = () => {
 
 	useEffect(() => {
 		dispatch(updateFiles())
-		console.log(files, "files")
 	}, [])
 
 	return (

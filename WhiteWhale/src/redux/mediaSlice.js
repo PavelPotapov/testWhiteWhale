@@ -20,7 +20,6 @@ export const mediaReducer = mediaSlice.reducer
 export const updateFiles = (setIsPageLoading = () => {}) => {
 	return async (dispatch) => {
 		await getAllMedia().then((res) => {
-			console.log(res, "!!!!res", dispatch)
 			dispatch(setFiles(res.data.files))
 		})
 		setIsPageLoading(false)
