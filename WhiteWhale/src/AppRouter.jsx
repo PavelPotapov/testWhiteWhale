@@ -42,7 +42,7 @@ const router = createBrowserRouter(
 				<Route exact path="sign_up" element={<SignUp />} />
 				<Route element={<AuthRequired />}>
 					<Route path="*" element={<Navigate to="workspace" />} />
-					<Route exact path="workspace" element={<Workspace />} />
+					<Route exact path="/workspace" element={<Workspace />} />
 				</Route>
 			</Route>
 		</Route>

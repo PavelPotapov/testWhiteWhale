@@ -42,7 +42,6 @@ export const Workspace = () => {
 	const onUploadProgress = (progressEvent) => {
 		const { loaded, total } = progressEvent
 		let percent = Math.floor((loaded * 100) / total)
-		console.log(percent, "!!!!")
 		if (percent < 100) {
 			setPercentOfLoaded(percent + "%")
 		}
