@@ -7,8 +7,13 @@ export const getMedia = (id) => baseAxios.get(`${endpoints.media}/${id}`)
 
 export const deleteMedia = (id) => baseAxios.delete(`${endpoints.media}/${id}`)
 
-export const uploadFiles = (formData) =>
-	baseAxios.post(`${endpoints.media}/upload`, formData)
+export const uploadFiles = async (formData, onUploadProgress) =>
+	baseAxios.post(`${endpoints.media}/upload`, formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+		onUploadProgress,
+	})
 
 export const loadResources = (url) =>
 	baseAxios.get(url, {

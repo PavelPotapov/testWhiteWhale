@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button, Text, Box, Spinner, useToast } from "@chakra-ui/react"
 import { useDispatch, useSelector } from "react-redux"
 import { updateFiles } from "../../redux/mediaSlice"
 
-import { useDropzone } from "react-dropzone"
 import { uploadFiles } from "../../api/mediaAPI"
 import { isValidSizeFile, iso8601ToDate } from "../../util"
 import { CardElement } from "../../components/Card/CardElement"
 import styles from "./Workspace.module.css"
 import { Header } from "../../components/Header/Header"
+import { DragDropFiles } from "../../components/DragDropFiles/DragDropFiles"
+import { SpinnerWithNumber } from "../../components/ui/SpinnerWithNumber/SpinnerWithNumber"
 
 const createFilesElements = (files) => {
 	return files.map((file) => {
@@ -31,15 +32,21 @@ export const Workspace = () => {
 	const { files } = useSelector((state) => state.media)
 	const [selectedFile, setSelectedFile] = useState("")
 	const [tryingToSendFile, setTryingToSendFile] = useState(false)
+	const [percentOfLoaded, setPercentOfLoaded] = useState("0 %")
 
 	useEffect(() => {
 		dispatch(updateFiles())
 		document.title = "Workspace"
 	}, [])
 
-	useEffect(() => {
-		console.log(files)
-	}, [files])
+	const onUploadProgress = (progressEvent) => {
+		const { loaded, total } = progressEvent
+		let percent = Math.floor((loaded * 100) / total)
+		console.log(percent, "!!!!")
+		if (percent < 100) {
+			setPercentOfLoaded(percent + "%")
+		}
+	}
 
 	const onFileDrop = (file) => {
 		if (isValidSizeFile(file[0])) {
@@ -57,11 +64,8 @@ export const Workspace = () => {
 		const formData = new FormData()
 		formData.append("files[]", file)
 		setTryingToSendFile(true)
-		uploadFiles(formData, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		})
+
+		uploadFiles(formData, onUploadProgress)
 			.then(() => {
 				toast({
 					title: "File uploaded",
@@ -73,9 +77,9 @@ export const Workspace = () => {
 				//обновляем состояние файлов
 				dispatch(updateFiles())
 			})
-			.catch(() => {
+			.catch((err) => {
 				toast({
-					title: "File not uploaded",
+					title: "File not uploaded. Max size 1 MB",
 					status: "error",
 					isClosable: true,
 				})
@@ -84,14 +88,6 @@ export const Workspace = () => {
 				setTryingToSendFile(false)
 			})
 	}
-
-	const {
-		getRootProps: getDropzoneRootProps,
-		getInputProps: getDropzoneInputProps,
-		isDragActive: isDropzoneDragActive,
-	} = useDropzone({
-		onDrop: onFileDrop,
-	})
 
 	return (
 		<Box>
@@ -118,44 +114,16 @@ export const Workspace = () => {
 					)}
 				</Box>
 				<Box w={"360px"} className={styles.workspaceDrop}>
-					<Box
-						height={"180px"}
-						bgColor={"gray.100"}
-						cursor={"pointer"}
-						borderRadius={"20px"}
-						display={"flex"}
-						alignItems={"center"}
-						justifyContent={"center"}
-						{...getDropzoneRootProps()}
-						style={{
-							WebkitBoxShadow: "11px 9px 10px 2px rgba(34, 60, 80, 0.24)",
-							MozBoxShadow: "11px 9px 10px 2px rgba(34, 60, 80, 0.24)",
-							boxShadow: "11px 9px 10px 2px rgba(34, 60, 80, 0.24)",
-						}}
-						transition={"transform .3s ease"}
-						_hover={{
-							transform: "scale(1.05)",
-						}}
-					>
-						<input {...getDropzoneInputProps()} />
-						{!isDropzoneDragActive ? (
-							<Text textAlign={"center"} fontWeight="600">
-								Drag 'n' drop some files here, or click to select files 🎯
-							</Text>
-						) : (
-							<Text textAlign={"center"} fontWeight="600">
-								Drop files 🗳️
-							</Text>
-						)}
-					</Box>
+					<DragDropFiles onFileDrop={onFileDrop} />
 					{tryingToSendFile ? (
 						<Box
+							marginTop={"25px"}
 							display={"flex"}
 							minH={"60px"}
 							justifyContent={"center"}
 							alignItems={"center"}
 						>
-							<Spinner></Spinner>
+							<SpinnerWithNumber number={percentOfLoaded} />
 						</Box>
 					) : (
 						<Box marginTop={"20px"}>
@@ -168,16 +136,18 @@ export const Workspace = () => {
 							{selectedFile && (
 								<Box marginTop={"20px"} display={"flex"} gap="10px">
 									<Button
-										borderRadius={"20px"}
+										borderRadius={"0.375rem"}
 										onClick={() => sendFile(selectedFile)}
+										colorScheme="blue"
 									>
-										Send file
+										Upload file 🚀
 									</Button>
 									<Button
-										borderRadius={"20px"}
+										borderRadius={"0.375rem"}
 										onClick={() => setSelectedFile()}
+										colorScheme="blue"
 									>
-										Clear file
+										Clear file 🧹
 									</Button>
 								</Box>
 							)}

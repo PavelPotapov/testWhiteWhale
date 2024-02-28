@@ -149,7 +149,7 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 						<ButtonGroup spacing="2">
 							<Button
 								variant="solid"
-								colorScheme="whiteAlpha"
+								colorScheme="blackAlpha"
 								onClick={handleDelete}
 								padding={"0px 30px"}
 								fontSize={"1.5rem"}
@@ -160,7 +160,7 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 						<ButtonGroup spacing="2" as="a" href={file} download>
 							<Button
 								variant="solid"
-								colorScheme="whiteAlpha"
+								colorScheme="blue"
 								padding={"0px 30px"}
 								w={"100%"}
 								fontSize={"1.5rem"}

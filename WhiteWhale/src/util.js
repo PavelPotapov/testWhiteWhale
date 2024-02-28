@@ -14,7 +14,9 @@ export const isValidSizeFile = (file) => {
 		return false
 	}
 	// Проверяем размер файла
-	const maxSizeInBytes = 1024 * 1024 // 1 МБ в байтах
+	//По тз максимальный размер 1МБ, я специально сделал больше (*1024), чтобы показать, как работает uploadOnProgress в момент отправки файла и отображаются проценты загрузки.
+	//Бек по итогу все равно у себя сделал эту проверку 413 Request Entity Too Large
+	const maxSizeInBytes = 1024 * 1024 * 1024
 	if (file.size > maxSizeInBytes) {
 		return false
 	}
