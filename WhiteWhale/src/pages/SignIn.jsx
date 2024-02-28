@@ -57,6 +57,7 @@ export const SignIn = () => {
 				toast({
 					title: "Hello!",
 					status: "success",
+					isClosable: true,
 				})
 				dispatch(loginReduce({ email: data.email, name: data.name }))
 				Cookies.set("access_token", res.data.token)
@@ -66,6 +67,7 @@ export const SignIn = () => {
 				toast({
 					title: "error",
 					status: "error",
+					isClosable: true,
 				})
 			})
 			.finally(() => {

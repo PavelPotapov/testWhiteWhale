@@ -12,7 +12,7 @@ import { SignIn } from "./pages/SignIn"
 import { SignUp } from "./pages/SignUp"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
-import { Workspace } from "./pages/Workspace"
+import { Workspace } from "./pages/workspace/Workspace"
 import { checkAuth } from "./redux/authThunks"
 import Cookies from "js-cookie"
 

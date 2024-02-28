@@ -54,6 +54,7 @@ export const SignUp = () => {
 				toast({
 					title: "Account created",
 					status: "success",
+					isClosable: true,
 				})
 
 				navigate("/sign_in")
@@ -63,6 +64,7 @@ export const SignUp = () => {
 				toast({
 					title: errorMsg,
 					status: "error",
+					isClosable: true,
 				})
 			})
 			.finally(() => {
