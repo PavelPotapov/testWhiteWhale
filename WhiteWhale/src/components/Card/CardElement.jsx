@@ -9,18 +9,18 @@ import {
 	Image,
 	Heading,
 	Text,
-	Divider,
 	Box,
 	Spinner,
 	useToast,
 } from "@chakra-ui/react"
 
 import { useDispatch, useSelector } from "react-redux"
-import { updateFiles, setFiles } from "../../redux/mediaSlice"
+import { setFiles } from "../../redux/mediaSlice"
 import { deleteMedia, loadResources } from "../../api/mediaAPI"
-import { dataURItoBlob } from "../../util"
+import { urlToFile as getUrlToFile, handleError } from "../../util"
 import { allowedMimieType, mimieTypesIcons } from "../../mimieTypes"
 import styles from "./Card.module.css"
+import PropTypes from "prop-types"
 
 export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 	const [isTryingToDelete, setIsTryingToDelete] = useState(false)
@@ -44,16 +44,16 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 				})
 				dispatch(setFiles(files.filter((file) => file.id !== id)))
 			})
-			.catch(() => {
+			.catch((err) => {
+				const errorMsg = handleError(err)
 				toast({
-					title: "File was not deleted",
+					title: errorMsg,
 					status: "error",
 					isClosable: true,
 				})
 			})
 			.finally(() => {
 				setIsTryingToDelete(false)
-				dispatch(updateFiles())
 			})
 	}
 
@@ -65,7 +65,7 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 			.then((res) => {
 				const mimeType = res.headers["content-type"]
 				const data = res.data
-				urlToFile = dataURItoBlob(data, mimeType)
+				urlToFile = getUrlToFile(data, mimeType)
 				if (allowedMimieType.includes(mimeType)) {
 					urlToIcon = urlToFile
 				} else {
@@ -138,7 +138,7 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 						</Box>
 						<Stack mt="6" spacing="3">
 							<Heading size="m" className={styles.overflowText}>
-								{fileName}
+								{"📦" + fileName}
 							</Heading>
 							<Text color="blue.600" fontSize="xs">
 								{createdAt}
@@ -173,4 +173,12 @@ export const CardElement = ({ id, name, url, createdAt, fileName }) => {
 			)}
 		</Box>
 	)
+}
+
+CardElement.propTypes = {
+	id: PropTypes.string,
+	name: PropTypes.string,
+	url: PropTypes.string,
+	createdAt: PropTypes.string,
+	fileName: PropTypes.string,
 }

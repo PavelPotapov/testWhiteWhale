@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { checkAuth } from "./authThunks"
+import Cookies from "js-cookie"
 
 export const userInfoSlice = createSlice({
 	name: "userInfo",
@@ -17,8 +18,16 @@ export const userInfoSlice = createSlice({
 			state.isAuthenticated = true
 		},
 		logout: (state) => {
+			Cookies.remove("access_token")
 			state.user = null
 			state.isAuthenticated = false
+		},
+		checkAuthSync: (state) => {
+			if (Cookies.get("access_token")) {
+				state.isAuthenticated = true
+			} else {
+				state.isAuthenticated = false
+			}
 		},
 	},
 	extraReducers: (builder) => {
@@ -26,7 +35,7 @@ export const userInfoSlice = createSlice({
 			.addCase(checkAuth.pending, (state) => {
 				state.loading = true
 			})
-			.addCase(checkAuth.fulfilled, (state, action) => {
+			.addCase(checkAuth.fulfilled, (state) => {
 				//api не предоставляет возможность получить name и email пользователя
 				//state.user = action.payload
 				state.isAuthenticated = true
@@ -38,6 +47,6 @@ export const userInfoSlice = createSlice({
 	},
 })
 
-export const { login, logout } = userInfoSlice.actions
+export const { login, logout, checkAuthSync } = userInfoSlice.actions
 
 export const userInfoReducer = userInfoSlice.reducer

@@ -1,5 +1,6 @@
 import { createContext, useState } from "react"
 import { Container, Spinner } from "@chakra-ui/react"
+import PropTypes from "prop-types"
 
 const initialValue = {
 	isPageLoading: true,
@@ -35,4 +36,8 @@ export const PageLoadingProvider = ({ children }) => {
 			{children}
 		</pageLoadingContext.Provider>
 	)
+}
+
+PageLoadingProvider.propTypes = {
+	children: PropTypes.node,
 }

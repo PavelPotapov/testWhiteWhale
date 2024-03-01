@@ -1,0 +1,2 @@
+slice для setPAgeLoading
+решить проблему checkAuth

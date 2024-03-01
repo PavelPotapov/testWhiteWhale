@@ -7,10 +7,8 @@ import {
 	Button,
 	Text,
 	FormControl,
-	FormLabel,
 	Heading,
 	VStack,
-	flattenTokens,
 	useToast,
 } from "@chakra-ui/react"
 
@@ -20,6 +18,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { login as loginReduce } from "../redux/userInfoSlice"
 import { login } from "../api/userInfoAPI"
 import { useForm } from "react-hook-form"
+import { checkAuthSync } from "../redux/userInfoSlice"
+import routes from "../routes"
+import { handleError } from "../util"
 
 export const SignIn = () => {
 	const { setIsPageLoading } = useContext(pageLoadingContext)
@@ -32,7 +33,6 @@ export const SignIn = () => {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
 	} = useForm()
 
@@ -40,13 +40,14 @@ export const SignIn = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		dispatch(checkAuthSync())
 		setIsPageLoading(false)
 		document.title = "WhiteWhale | Sign in"
 	}, [])
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate("/workspace")
+			navigate(routes.workspace)
 		}
 	}, [isAuthenticated])
 
@@ -64,8 +65,9 @@ export const SignIn = () => {
 				navigate("/workspace")
 			})
 			.catch((err) => {
+				const errorMsg = handleError(err)
 				toast({
-					title: "error",
+					title: errorMsg,
 					status: "error",
 					isClosable: true,
 				})
@@ -133,9 +135,9 @@ export const SignIn = () => {
 					Sign In
 				</Button>
 				<Box display={"flex"} justifyContent={"center"}>
-					<Text>Didn't register? 👉&nbsp; </Text>
+					<Text>Didn&apos;t register? 👉&nbsp; </Text>
 					<Text fontWeight={700}>
-						<Link to="/sign_up">Sign Up</Link>
+						<Link to={routes.signUp}>Sign Up</Link>
 					</Text>
 				</Box>
 			</VStack>

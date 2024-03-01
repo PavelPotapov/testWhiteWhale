@@ -1,12 +1,13 @@
-import { useCallback, useContext, useEffect, useState } from "react"
-import { Button, Text, Box, Spinner, useToast } from "@chakra-ui/react"
+import { useContext } from "react"
+import { Button, Text, Box, useToast } from "@chakra-ui/react"
 import { useDispatch, useSelector } from "react-redux"
-import Cookies from "js-cookie"
 import { logout } from "../../redux/userInfoSlice"
 import { setFiles } from "../../redux/mediaSlice"
 import { useNavigate } from "react-router-dom"
 import { pageLoadingContext } from "./../../context/pageLoadingContext"
 import { logout as logoutAPI } from "../../api/userInfoAPI"
+import routes from "../../routes"
+import { handleError } from "../../util"
 
 export const Header = () => {
 	const { files } = useSelector((state) => state.media)
@@ -19,24 +20,27 @@ export const Header = () => {
 		setIsPageLoading(true)
 		logoutAPI()
 			.then(() => {
-				Cookies.remove("access_token")
-				dispatch(logout())
 				dispatch(setFiles([]))
-				navigate("/sign_in")
+				navigate(routes.singIn)
 				toast({
 					title: "You logout",
 					status: "success",
 					isClosable: true,
 				})
 			})
-			.catch(() => {
+			.catch((err) => {
+				const errorMsg = handleError(err)
 				toast({
-					title: "You not logout",
+					title: errorMsg,
 					status: "error",
 					isClosable: true,
 				})
 			})
 			.finally(() => {
+				//В любом случае изменю статус аутентификации и выйду.
+				// Касательно этого момента объяснял в комментарии README.md а также у функции updateFiles
+				// Если пользователь подменит или удалит куки токен, нет отдельного роута для рефреша или проверки на статус авторизации
+				dispatch(logout())
 				setIsPageLoading(false)
 			})
 	}

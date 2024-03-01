@@ -7,21 +7,22 @@ import {
 	Button,
 	Text,
 	FormControl,
-	FormLabel,
 	Heading,
 	VStack,
-	flattenTokens,
 	useToast,
 } from "@chakra-ui/react"
 
 import { Link, useNavigate } from "react-router-dom"
 import { registration } from "../api/userInfoAPI"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import routes from "../routes"
+import { checkAuthSync } from "../redux/userInfoSlice"
+import { handleError } from "../util"
 
 export const SignUp = () => {
 	const { setIsPageLoading } = useContext(pageLoadingContext)
 	const { isAuthenticated } = useSelector((state) => state.userInfo)
-
+	const dispatch = useDispatch()
 	const [loginValue, setLoginValue] = useState("")
 	const [password, setPassword] = useState("")
 	const [name, setName] = useState("")
@@ -37,30 +38,31 @@ export const SignUp = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		dispatch(checkAuthSync())
 		setIsPageLoading(false)
 		document.title = "WhiteWhale | Sign up"
 	}, [])
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate("/workspace")
+			navigate(routes.workspace)
 		}
 	}, [isAuthenticated])
 
 	const onSubmit = (data) => {
 		setIsPageLoading(true)
 		registration(data.email, data.password, data.name)
-			.then((res) => {
+			.then(() => {
 				toast({
 					title: "Account created",
 					status: "success",
 					isClosable: true,
 				})
 
-				navigate("/sign_in")
+				navigate(routes.singIn)
 			})
 			.catch((err) => {
-				const errorMsg = err.response.data.errors.email[0]
+				const errorMsg = handleError(err)
 				toast({
 					title: errorMsg,
 					status: "error",
@@ -168,7 +170,7 @@ export const SignUp = () => {
 				<Box display={"flex"} justifyContent={"center"}>
 					<Text>Already have acc? 👉&nbsp; </Text>
 					<Text fontWeight={700}>
-						<Link to="/sign_in">Sign In</Link>
+						<Link to={routes.singIn}>Sign In</Link>
 					</Text>
 				</Box>
 			</VStack>

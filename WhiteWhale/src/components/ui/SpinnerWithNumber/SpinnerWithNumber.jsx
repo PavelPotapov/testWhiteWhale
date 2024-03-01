@@ -1,5 +1,6 @@
 import { Spinner } from "@chakra-ui/react"
 import styles from "./SpinnerWithNumber.module.css"
+import PropTypes from "prop-types"
 
 export const SpinnerWithNumber = ({ number }) => {
 	return (
@@ -8,4 +9,8 @@ export const SpinnerWithNumber = ({ number }) => {
 			<div className={styles.spinnerNumber}>{number}</div>
 		</div>
 	)
+}
+
+SpinnerWithNumber.propTypes = {
+	number: PropTypes.string,
 }

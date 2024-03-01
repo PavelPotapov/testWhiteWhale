@@ -1,32 +1,48 @@
-export function iso8601ToDate(isoString) {
+/**
+ * Функция для обработки строки даты
+ * @param {string} isoString
+ */
+export function formatDate(isoString) {
 	const date = new Date(isoString)
-	const year = date.getFullYear()
-	const month = ("0" + (date.getMonth() + 1)).slice(-2) // добавляем 1, так как месяцы в JavaScript нумеруются с 0
-	const day = ("0" + date.getDate()).slice(-2)
-	const hours = ("0" + date.getHours()).slice(-2)
-	const minutes = ("0" + date.getMinutes()).slice(-2)
-	const seconds = ("0" + date.getSeconds()).slice(-2)
-	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+	return `📅 ${date.getDay()}/${date.getMonth()}/${date.getFullYear()} - 🕥${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 }
 
+/**
+Проверяем размер файла
+По тз максимальный размер 1МБ, я специально сделал больше (*1024), чтобы показать, как работает uploadOnProgress в момент отправки файла и отображаются проценты загрузки.
+Бек по итогу все равно у себя сделал эту проверку 413 Request Entity Too Large
+ * @param {File} file 
+ * @returns {Boolean}
+ */
 export const isValidSizeFile = (file) => {
 	if (!(file instanceof File)) {
 		return false
 	}
-	// Проверяем размер файла
-	//По тз максимальный размер 1МБ, я специально сделал больше (*1024), чтобы показать, как работает uploadOnProgress в момент отправки файла и отображаются проценты загрузки.
-	//Бек по итогу все равно у себя сделал эту проверку 413 Request Entity Too Large
 	const maxSizeInBytes = 1024 * 1024 * 1024
-	if (file.size > maxSizeInBytes) {
-		return false
-	}
-
-	// Размер файла не превышает 1 МБ
-	return true
+	return file.size < maxSizeInBytes
+}
+/**
+ *
+ * @param {string} dataURI Строка, представляющая собой data URI.
+ * @param {string} mimeType Строка, представляющая собой data MIME type.
+ * @returns
+ */
+export function urlToFile(dataURI, mimeType) {
+	const blob = new Blob([dataURI], { type: mimeType })
+	return URL.createObjectURL(blob)
 }
 
-export function dataURItoBlob(dataURI, mimeType) {
-	const blob = new Blob([dataURI], { type: mimeType })
-	const imageUrl = URL.createObjectURL(blob)
-	return imageUrl
+/**
+ * Функция для обработки ошибок сервера или сети, или во время обработки запроса
+ * @param {AxiosError | Error} err - Error object
+ * @returns {string}
+ */
+export function handleError(err) {
+	let errorMsg
+	if (err.response) {
+		errorMsg = `${err.response.statusText}`
+	} else if (err.request) {
+		errorMsg = err.message
+	}
+	return errorMsg
 }

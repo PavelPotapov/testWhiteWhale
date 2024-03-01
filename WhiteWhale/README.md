@@ -1,8 +1,47 @@
-# React + Vite
+# WhiteWhale
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Приветствую Вас в приложении WhiteWhale. Это тестовое задание написанное для компании [Белый Кит](https://belkit.ru/) по [ТЗ](https://github.com/Ahitkin-kitactive/test-js)**
 
-Currently, two official plugins are available:
+## Описание
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### `Node v20.9.0 и выше` <br>
+
+### `npm 10.1.0 и выше` <br>
+
+### Stack `React 18` / `Redux Toolkit` / `ReactRouterV6.` <br><br>
+
+### В качестве UI components использовал [ChakraUI](https://chakra-ui.com/)<br><br><img src="https://raw.githubusercontent.com/chakra-ui/chakra-ui/main/media/logo-colored@2x.png?raw=true" alt="Chakra logo" width="300" style="max-width: 100%;"> <br><br>
+
+### В качестве сборщика решил использовать [Vite](https://vitejs.dev/)<br><br><img src="https://vitejs.dev/logo.svg" alt="Пример картинки" width="100" height="80" style="vertical-align: middle"/><br><br>
+
+> Изначально в ТЗ не было роута для получения refresh token или проверки на корректность текущего токена, для проверки состояния авторизации сделал обертку над компонентами Route,
+> в рамках которой совершал запрос на сервер за получением файлов и при успешности этого запроса перенаправлял пользователя на страницу /workspace, такой подход показался не совсем удачным. <br> Например, пока выполнялся запрос, на некоторое время показывалась страница `/sign_in` и только после успешного выполнения запроса за файлами было перенаправление не `/workspace` и повторный запрос за файлами, так как предыдущий запрос проходил в рамках ассинхроного чанка для слайса `userInfoSlice`, а сущность файлов находилась в другом слайсе и была необходимость в повторном запросе. По сути одни и те же действия, не оптимизировано. <br> На данный момент решил сделать обычную проверку на наличие `access_token` в куки.
+
+## Установка
+
+**Клонируйте репозиторий:**
+
+```bash
+git clone https://github.com/pavelpotapovv/awesome-project.git
+cd awesome-project
+```
+
+**Установите зависимости:**
+
+```bash
+npm install
+```
+
+## Запуск
+
+```bash
+npm run dev
+```
+
+**ИЛИ**
+
+```bash
+vite
+```
+
+### <img src="https://freedombelarus.github.io/0004/t_logo.png" alt="Пример картинки" width="20" height="20" style=""/> [PavelPotapov](https://t.me/Pavel_Potapov)

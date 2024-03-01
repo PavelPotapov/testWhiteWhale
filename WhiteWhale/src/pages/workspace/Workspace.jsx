@@ -1,22 +1,23 @@
-import { useEffect, useRef, useState } from "react"
-import { Button, Text, Box, Spinner, useToast } from "@chakra-ui/react"
+import { useEffect, useState } from "react"
+import { Button, Text, Box, useToast } from "@chakra-ui/react"
 import { useDispatch, useSelector } from "react-redux"
-import { updateFiles } from "../../redux/mediaSlice"
-
+import { toggleTryAddFile, updateFiles } from "../../redux/mediaSlice"
 import { uploadFiles } from "../../api/mediaAPI"
-import { isValidSizeFile, iso8601ToDate } from "../../util"
+import { isValidSizeFile, formatDate, handleError } from "../../util"
 import { CardElement } from "../../components/Card/CardElement"
 import styles from "./Workspace.module.css"
 import { Header } from "../../components/Header/Header"
 import { DragDropFiles } from "../../components/DragDropFiles/DragDropFiles"
 import { SpinnerWithNumber } from "../../components/ui/SpinnerWithNumber/SpinnerWithNumber"
+import SceletonLoaderCard from "../../components/ui/SceletonLoader/SceletonLoaderCard"
 
+//Создание карточек
 const createFilesElements = (files) => {
 	return files.map((file) => {
 		return (
 			<CardElement
 				name={file.name}
-				createdAt={iso8601ToDate(file.createdAt)}
+				createdAt={formatDate(file.createdAt)}
 				key={file.id}
 				id={file.id}
 				url={file.url}
@@ -26,19 +27,25 @@ const createFilesElements = (files) => {
 	})
 }
 
+//Создание скелетона перед показом файлов
+const createSceletonLoaderCard = (count) => {
+	return [
+		...Array(count)
+			.fill(0)
+			.map((_, index) => {
+				return <SceletonLoaderCard key={index} />
+			}),
+	]
+}
+
 export const Workspace = () => {
 	const dispatch = useDispatch()
 	const toast = useToast()
-	const { files } = useSelector((state) => state.media)
+	const { files, isLoading, isTryAddFile } = useSelector((state) => state.media)
 	const [selectedFile, setSelectedFile] = useState("")
-	const [tryingToSendFile, setTryingToSendFile] = useState(false)
 	const [percentOfLoaded, setPercentOfLoaded] = useState("0 %")
 
-	useEffect(() => {
-		dispatch(updateFiles())
-		document.title = "Workspace"
-	}, [])
-
+	//Отслеживание загрузки файла на сервер
 	const onUploadProgress = (progressEvent) => {
 		const { loaded, total } = progressEvent
 		let percent = Math.floor((loaded * 100) / total)
@@ -47,6 +54,7 @@ export const Workspace = () => {
 		}
 	}
 
+	//Обработка дропа файла в dropzone
 	const onFileDrop = (file) => {
 		if (isValidSizeFile(file[0])) {
 			setSelectedFile(file[0])
@@ -59,11 +67,12 @@ export const Workspace = () => {
 		}
 	}
 
+	//Отправка файла на сервер
 	const sendFile = (file) => {
 		const formData = new FormData()
 		formData.append("files[]", file)
-		setTryingToSendFile(true)
 
+		dispatch(toggleTryAddFile({ status: true }))
 		uploadFiles(formData, onUploadProgress)
 			.then(() => {
 				toast({
@@ -71,21 +80,37 @@ export const Workspace = () => {
 					status: "success",
 					isClosable: true,
 				})
-				//чистим стейт файла
+
 				setSelectedFile(null)
-				//обновляем состояние файлов
 				dispatch(updateFiles())
 			})
 			.catch((err) => {
+				const errorMsg = handleError(err)
 				toast({
-					title: "File not uploaded. Max size 1 MB",
+					title: errorMsg,
 					status: "error",
 					isClosable: true,
 				})
 			})
 			.finally(() => {
-				setTryingToSendFile(false)
+				dispatch(toggleTryAddFile({ status: false }))
 			})
+	}
+
+	//Пытаемся получить файлы
+	useEffect(() => {
+		dispatch(updateFiles())
+		document.title = "Workspace"
+	}, [])
+	
+	const renderFileCards = () => {
+		if (isLoading) {
+			return createSceletonLoaderCard(19)
+		} else if (files.length !== 0) {
+			return createFilesElements(files)
+		} else {
+			return <Text fontSize={"2rem"}>File list empty 🗿</Text>
+		}
 	}
 
 	return (
@@ -106,15 +131,12 @@ export const Workspace = () => {
 					flexWrap={"wrap"}
 					gap="25px"
 				>
-					{files.length === 0 ? (
-						<Text fontSize={"2rem"}>File list empty 🗿</Text>
-					) : (
-						createFilesElements(files)
-					)}
+					{renderFileCards()}
 				</Box>
 				<Box w={"360px"} className={styles.workspaceDrop}>
 					<DragDropFiles onFileDrop={onFileDrop} />
-					{tryingToSendFile ? (
+					{/* Пытаемся ли отправить файл на сервер */}
+					{isTryAddFile ? (
 						<Box
 							marginTop={"25px"}
 							display={"flex"}

@@ -1,5 +1,6 @@
 import { useDropzone } from "react-dropzone"
-import { Text, Box, Spinner, useToast } from "@chakra-ui/react"
+import { Text, Box } from "@chakra-ui/react"
+import PropTypes from "prop-types"
 
 export const DragDropFiles = ({ onFileDrop }) => {
 	const {
@@ -31,15 +32,15 @@ export const DragDropFiles = ({ onFileDrop }) => {
 			}}
 		>
 			<input {...getDropzoneInputProps()} />
-			{!isDropzoneDragActive ? (
-				<Text textAlign={"center"} fontWeight="600">
-					Drag 'n' drop some files here, or click to select files 🎯
-				</Text>
-			) : (
-				<Text textAlign={"center"} fontWeight="600">
-					Drop files 🗳️
-				</Text>
-			)}
+			<Text textAlign={"center"} fontWeight="600">
+				{!isDropzoneDragActive
+					? "Drag 'n' drop some files here, or click to select files 🎯"
+					: "Drop files 🗳️"}
+			</Text>
 		</Box>
 	)
+}
+
+DragDropFiles.propTypes = {
+	onFileDrop: PropTypes.func,
 }
