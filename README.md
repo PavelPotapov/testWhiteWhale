@@ -23,7 +23,7 @@
 
 ```bash
 git clone https://github.com/PavelPotapov/testWhiteWhale/
-cd cd testWhiteWhale
+cd testWhiteWhale
 ```
 
 **Установите зависимости:**
