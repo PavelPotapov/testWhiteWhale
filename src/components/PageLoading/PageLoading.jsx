@@ -21,7 +21,7 @@ export const PageLoading = ({ children }) => {
 					<Spinner width="2rem" height="2rem" />
 				</Box>
 			)}
-			<div>{children}</div>
+			<div style={{ padding: "20px 20px" }}>{children}</div>
 		</>
 	)
 }

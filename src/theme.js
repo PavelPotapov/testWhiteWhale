@@ -9,7 +9,6 @@ export const theme = extendTheme({
 		global: {
 			body: {
 				bg: "background.100",
-				padding: 4,
 			},
 		},
 	},
