@@ -1,23 +1,22 @@
-import { useContext } from "react"
 import { Button, Text, Box, useToast } from "@chakra-ui/react"
 import { useDispatch, useSelector } from "react-redux"
 import { logout } from "../../redux/userInfoSlice"
 import { setFiles } from "../../redux/mediaSlice"
 import { useNavigate } from "react-router-dom"
-import { pageLoadingContext } from "./../../context/pageLoadingContext"
 import { logout as logoutAPI } from "../../api/userInfoAPI"
-import routes from "../../routes"
+import { routes } from "../../const"
 import { handleError } from "../../util"
+import { setPageLoading } from "../../redux/pageLoadingSlice"
 
 export const Header = () => {
 	const { files } = useSelector((state) => state.media)
+
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const toast = useToast()
-	const { setIsPageLoading } = useContext(pageLoadingContext)
 
 	const handleLogout = () => {
-		setIsPageLoading(true)
+		dispatch(setPageLoading({ status: true }))
 		logoutAPI()
 			.then(() => {
 				dispatch(setFiles([]))
@@ -41,7 +40,7 @@ export const Header = () => {
 				// Касательно этого момента объяснял в комментарии README.md а также у функции updateFiles
 				// Если пользователь подменит или удалит куки токен, нет отдельного роута для рефреша или проверки на статус авторизации
 				dispatch(logout())
-				setIsPageLoading(false)
+				dispatch(setPageLoading({ status: false }))
 			})
 	}
 

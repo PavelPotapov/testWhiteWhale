@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from "react"
-import { pageLoadingContext } from "../context/pageLoadingContext"
-
+import { useEffect, useState } from "react"
 import {
 	Box,
 	Input,
@@ -19,11 +17,11 @@ import { login as loginReduce } from "../redux/userInfoSlice"
 import { login } from "../api/userInfoAPI"
 import { useForm } from "react-hook-form"
 import { checkAuthSync } from "../redux/userInfoSlice"
-import routes from "../routes"
+import { routes } from "../const"
 import { handleError } from "../util"
+import { setPageLoading } from "../redux/pageLoadingSlice"
 
 export const SignIn = () => {
-	const { setIsPageLoading } = useContext(pageLoadingContext)
 	const dispatch = useDispatch()
 	const { isAuthenticated } = useSelector((state) => state.userInfo)
 
@@ -41,7 +39,7 @@ export const SignIn = () => {
 
 	useEffect(() => {
 		dispatch(checkAuthSync())
-		setIsPageLoading(false)
+		dispatch(setPageLoading({ status: false }))
 		document.title = "WhiteWhale | Sign in"
 	}, [])
 
@@ -52,7 +50,7 @@ export const SignIn = () => {
 	}, [isAuthenticated])
 
 	const onSubmit = (data) => {
-		setIsPageLoading(true)
+		dispatch(setPageLoading({ status: true }))
 		login(data.email, data.password)
 			.then((res) => {
 				toast({
@@ -73,7 +71,7 @@ export const SignIn = () => {
 				})
 			})
 			.finally(() => {
-				setIsPageLoading(false)
+				dispatch(setPageLoading({ status: false }))
 			})
 	}
 

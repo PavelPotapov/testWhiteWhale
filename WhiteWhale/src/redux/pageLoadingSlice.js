@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export const pageLoadingSlice = createSlice({
-	name: "pageLoadingSlice",
+	name: "pageLoading",
 	initialState: {
-		isLoading: false,
+		isLoading: true,
 	},
 	reducers: {
 		setPageLoading: (state, action) => {
@@ -13,4 +13,4 @@ export const pageLoadingSlice = createSlice({
 })
 
 export const { setPageLoading } = pageLoadingSlice.actions
-export const userInfoReducer = pageLoadingSlice.reducer
+export const pageLoadingReducer = pageLoadingSlice.reducer

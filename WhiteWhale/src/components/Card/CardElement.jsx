@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { setFiles } from "../../redux/mediaSlice"
 import { deleteMedia, loadResources } from "../../api/mediaAPI"
 import { urlToFile as getUrlToFile, handleError } from "../../util"
-import { allowedMimieType, mimieTypesIcons } from "../../mimieTypes"
+import { allowedMimieType, mimieTypesIcons } from "../../const"
 import styles from "./Card.module.css"
 import PropTypes from "prop-types"
 

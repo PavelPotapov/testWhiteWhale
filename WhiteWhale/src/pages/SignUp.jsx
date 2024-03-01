@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react"
-import { pageLoadingContext } from "../context/pageLoadingContext"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import {
 	Box,
@@ -15,12 +14,12 @@ import {
 import { Link, useNavigate } from "react-router-dom"
 import { registration } from "../api/userInfoAPI"
 import { useDispatch, useSelector } from "react-redux"
-import routes from "../routes"
+import { routes } from "../const"
 import { checkAuthSync } from "../redux/userInfoSlice"
 import { handleError } from "../util"
+import { setPageLoading } from "../redux/pageLoadingSlice"
 
 export const SignUp = () => {
-	const { setIsPageLoading } = useContext(pageLoadingContext)
 	const { isAuthenticated } = useSelector((state) => state.userInfo)
 	const dispatch = useDispatch()
 	const [loginValue, setLoginValue] = useState("")
@@ -39,7 +38,7 @@ export const SignUp = () => {
 
 	useEffect(() => {
 		dispatch(checkAuthSync())
-		setIsPageLoading(false)
+		dispatch(setPageLoading({ status: false }))
 		document.title = "WhiteWhale | Sign up"
 	}, [])
 
@@ -50,7 +49,7 @@ export const SignUp = () => {
 	}, [isAuthenticated])
 
 	const onSubmit = (data) => {
-		setIsPageLoading(true)
+		dispatch(setPageLoading({ status: true }))
 		registration(data.email, data.password, data.name)
 			.then(() => {
 				toast({
@@ -70,7 +69,7 @@ export const SignUp = () => {
 				})
 			})
 			.finally(() => {
-				setIsPageLoading(false)
+				dispatch(setPageLoading({ status: false }))
 			})
 	}
 

@@ -1,13 +1,14 @@
 import { useSelector } from "react-redux"
-import { Container, Spinner } from "@chakra-ui/react"
+import { Box, Spinner } from "@chakra-ui/react"
 import PropTypes from "prop-types"
 
 export const PageLoading = ({ children }) => {
-	const { isLoading } = useSelector((state) => state.pageLoadingSlice)
+	const { isLoading } = useSelector((state) => state.pageLoading)
+	console.log(isLoading, "isLoading")
 	return (
 		<>
 			{isLoading && (
-				<Container
+				<Box
 					bg="#E2E6EF"
 					position="absolute"
 					width="100vw"
@@ -18,9 +19,9 @@ export const PageLoading = ({ children }) => {
 					zIndex={999}
 				>
 					<Spinner width="2rem" height="2rem" />
-				</Container>
+				</Box>
 			)}
-			{children}
+			<div>{children}</div>
 		</>
 	)
 }

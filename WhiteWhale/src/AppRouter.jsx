@@ -13,7 +13,7 @@ import { SignUp } from "./pages/SignUp"
 import { useSelector } from "react-redux"
 import { useEffect } from "react"
 import { Workspace } from "./pages/workspace/Workspace"
-import routes from "./routes"
+import { routes } from "./const"
 
 const AuthRequired = () => {
 	const navigate = useNavigate()
